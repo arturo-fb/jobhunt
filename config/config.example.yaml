@@ -1,0 +1,177 @@
+# =============================================================================
+# JobHunt configuration  —  copy this file to config/config.yaml and edit it
+# This file is the single source of truth for the daily job scan.
+# Edit anything here and re-run the engine. Comments explain each setting.
+# =============================================================================
+
+profile:
+  name: "Your Full Name"          # also used in cover-letter file names (YourFullName.CL.pdf)
+  email: "you@example.com"
+  phone: "(555) 555-5555"
+  base_location: "City, ST"
+  standing: "Senior"             # Junior / Senior / Graduate / Professional
+  graduation: "2027-05"          # YYYY-MM
+  # Optional — paste your URLs so cover letters link them in the header:
+  links:
+    linkedin: ""
+    portfolio: ""
+  work_auth:
+    # Used only to annotate rows (never to hide them).
+    # Don't need visa sponsorship (US citizen / permanent resident)? Set
+    # track_sponsorship: false and the visa columns read N/A.
+    track_sponsorship: true
+    status: "F-1 international student"
+    stem_opt_years: 3            # STEM degree -> up to 3 yrs work on OPT, no sponsorship needed
+    needs_sponsorship_after_opt: true
+    # Roles requiring US citizenship or a security clearance are the only hard blockers.
+
+# -----------------------------------------------------------------------------
+# WHAT TO SEARCH FOR
+# -----------------------------------------------------------------------------
+search:
+  # Strong title signals — a hit here scores high.
+  titles_positive:
+    - "financial analyst"
+    - "finance intern"
+    - "finance analyst"
+    - "investment banking"
+    - "summer analyst"
+    - "corporate finance"
+    - "treasury"
+    - "capital markets"
+    - "sales and trading"
+    - "trader"
+    - "trading"
+    - "commodities"
+    - "derivatives"
+    - "fp&a"
+    - "financial planning"
+    - "asset management"
+    - "wealth management"
+    - "private equity"
+    - "equity research"
+    - "commercial banking"
+    - "investment analyst"
+    - "risk analyst"
+    - "business analyst"
+    - "data analyst"
+
+  # Softer keywords — hits add points but don't carry a row alone.
+  keywords_target:
+    - "finance"
+    - "financial"
+    - "banking"
+    - "investment"
+    - "portfolio"
+    - "valuation"
+    - "hedging"
+    - "markets"
+    - "analytics"
+    - "quantitative"
+
+  # Any of these in the TITLE excludes the row (too senior / wrong field).
+  titles_exclude:
+    - "senior"
+    - "sr."
+    - "staff"
+    - "principal"
+    - "vice president"
+    - " vp"
+    - "director"
+    - "head of"
+    - "lead "
+    - "manager"          # remove if you want to see manager roles
+    - "nurse"
+    - "software engineer"
+    - "registered"
+    - "phd"
+
+  # Seniority levels we want (used for scoring, not hard filtering).
+  seniority_target:
+    - "intern"
+    - "internship"
+    - "summer analyst"
+    - "new grad"
+    - "entry level"
+    - "analyst"
+    - "associate"
+
+  # Timeframe you're targeting.
+  timeframe:
+    summer_2027_internships: true
+    fulltime_starting_after_2027_05: true
+
+# -----------------------------------------------------------------------------
+# WHERE (locations)
+# -----------------------------------------------------------------------------
+locations:
+  countries: ["us", "ca", "mx", "gb"]   # priority order; US is #1
+  us_is_priority: true
+  remote_ok: true
+  # Optional city/state focus for scoring bonus (leave empty for all-US):
+  preferred_us: ["New York", "Los Angeles", "California", "Texas", "Chicago"]
+  # How the final top-N slots are split across countries (must sum to 1.0).
+  # Also weights how many Adzuna results are fetched per country.
+  country_weights:
+    us: 0.80
+    mx: 0.10
+    gb: 0.05
+    ca: 0.05
+
+# -----------------------------------------------------------------------------
+# OUTPUT — how many jobs land in the workbook
+# -----------------------------------------------------------------------------
+output:
+  max_jobs: 50              # keep only the best N after scoring + country quota
+
+# -----------------------------------------------------------------------------
+# SCORING WEIGHTS (0–100 final score)
+# -----------------------------------------------------------------------------
+scoring:
+  strong_title_hit: 40      # matched a titles_positive phrase
+  target_keyword_each: 6    # per keywords_target hit (capped)
+  target_keyword_cap: 24
+  seniority_match: 15       # role is intern/analyst/entry level
+  us_location: 10
+  other_target_country: 5
+  in_person_bonus: 5        # you prefer in-person; remote gets no bonus
+  preferred_city_bonus: 6
+  recency_7d: 8             # posted within the last 7 days
+  recency_30d: 4            # posted within the last 30 days
+
+# -----------------------------------------------------------------------------
+# SOURCES  (turn connectors on/off; keys live in secrets.yaml)
+# -----------------------------------------------------------------------------
+sources:
+  adzuna:
+    enabled: true
+    countries: ["us", "ca", "mx", "gb"]
+    results_per_query: 50
+    max_days_old: 21
+  usajobs:
+    enabled: false          # US-government roles; most require citizenship -> off by default
+  ats_boards:
+    enabled: true           # Greenhouse / Lever / Ashby company boards (no API key needed)
+    # Company list lives in config/companies.yaml
+
+# -----------------------------------------------------------------------------
+# STANDARD APPLICATION ANSWERS  (used later for auto-filling screening questions)
+# -----------------------------------------------------------------------------
+standard_answers:
+  # Fill these in yourself. Nothing here is used for scoring; it is a single
+  # place to keep the answers you give on application screening questions.
+  authorized_to_work_us: ""
+  require_sponsorship_now: ""
+  require_sponsorship_future: ""
+  government_position_self_or_relative_past_5y: ""
+  us_citizen: ""
+  security_clearance: ""
+  willing_to_relocate: ""
+  gender: ""                     # optional / "Decline to answer"
+  veteran_status: ""
+  disability_status: ""
+  hispanic_latino: ""
+  race_ethnicity: ""
+  earliest_start: ""
+  gpa: ""
+  degree: ""                     # e.g. "B.S. Finance, Your University"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS launchd agent for the daily JobHunt scan.
+  Don't edit by hand: ./engine/install_schedule.sh fills in __REPO__ and __HOUR__.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jobhunt.daily</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>JOBHUNT_EARLIEST_HOUR=__HOUR__ "__REPO__/engine/run_scan.sh"</string>
+    </array>
+
+    <!-- Fires at __HOUR__:00 when the Mac is awake. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>__HOUR__</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Also poke the script every 15 minutes. run_scan.sh exits instantly if
+         today's scan already ran (or it is earlier than __HOUR__:00), so this
+         catches the case where the Mac was asleep at the scheduled time. -->
+    <key>StartInterval</key>
+    <integer>900</integer>
+
+    <!-- Also run once right after login (e.g. after a reboot). -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>__REPO__/data/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>__REPO__/data/launchd.log</string>
+</dict>
+</plist>

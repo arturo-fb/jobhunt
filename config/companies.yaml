@@ -1,0 +1,42 @@
+# =============================================================================
+# Company ATS boards to scan directly (no API key required).
+# Each entry: the public board "token" used in the ATS URL.
+#   greenhouse -> https://boards-api.greenhouse.io/v1/boards/<token>/jobs
+#   lever      -> https://api.lever.co/v0/postings/<token>?mode=json
+#   ashby      -> https://api.ashbyhq.com/posting-api/job-board/<token>
+#
+# These are finance / fintech / asset-management / trading firms that a
+# Finance + Business Analytics candidate would target. Big banks (Goldman,
+# JPM, etc.) use Workday and are NOT here — those come through Adzuna instead.
+#
+# Tokens are best-effort; the engine skips any that error and logs them so you
+# can correct or delete. Add/remove freely.
+# =============================================================================
+
+greenhouse:
+  - ramp
+  - brex
+  - plaid
+  - affirm
+  - robinhood
+  - sofi
+  - chime
+  - coinbase
+  - carta
+  - addepar
+  - betterment
+  - marqeta
+  - point72
+  - millennium
+  - jumptrading
+  - geminitrust
+  - circle
+
+lever:
+  - wealthfront
+  - kraken
+  - mercury
+
+ashby:
+  - ramp
+  - openai
